@@ -1,0 +1,49 @@
+ int length = 25;
+            long failNumber = 0;
+            var inputRows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = length; i < inputRows.Length; i++)
+            {
+                long current = int.Parse(inputRows[i]);
+                var part = inputRows.Skip(i - length).Take(length).Select(x => long.Parse(x));
+                bool success = false;
+                foreach (var number in part)
+                {
+                    var rest = current - number;
+                    if (number != rest && part.Contains(rest))
+                    {
+                        success = true;
+                        break;
+                    }
+                }
+                if (!success)
+                {
+                    //hittat felet
+                    failNumber = current;
+                    break;
+                }
+
+            }
+            long low = 0;
+            long high = 0;
+            for (int i = 0; i < inputRows.Length; i++)
+            {
+                long sum = 0;
+                int j = i;
+                List<long> numbers = new List<long>();
+                while (sum < failNumber)
+                {
+                    numbers.Add(long.Parse(inputRows[j]));
+                    sum += long.Parse(inputRows[j]);
+                    j++;
+                }
+                if (sum == failNumber)
+                {
+                    numbers.Sort();
+                    low = numbers.First();
+                    high = numbers.Last();
+
+                    break;
+                }
+            }
+            return "failnumber " + failNumber + "high " + high + " low " + low;
+			
