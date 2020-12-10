@@ -1,0 +1,64 @@
+var inputRows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var listofBags = new List<string>();
+            listofBags.Add("shiny gold");
+            foreach (var a in inputRows)
+            {
+                foreach (var row in inputRows)
+                {
+                    var spl = row.Split(new string[] { "contain" }, StringSplitOptions.RemoveEmptyEntries);
+                    var templist = new List<string>();
+                    foreach (var bag in listofBags)
+                    {
+                        if (spl[1].Contains(bag))
+                        {
+                            var nw = spl[0].Replace(" bags", "").Trim();
+                            if (!templist.Contains(nw))
+                            {
+                                templist.Add(nw);
+                            }
+                        }
+                    }
+                    listofBags.AddRange(templist);
+                    listofBags = listofBags.Distinct().ToList();
+
+                }
+            }
+             
+            string bagname = "shiny gold";
+            long total = Recurse(bagname, inputRows);
+            return "bags " + listofBags.Count() +  " total: " + (total);
+			
+		private static long Recurse(string bagname,string[] inputRows)
+        {
+            long total = 0;
+            foreach (var row in inputRows)
+            {
+                var spl = row.Split(new string[] { "contain" }, StringSplitOptions.RemoveEmptyEntries);
+                var nw = spl[0].Replace(" bags", "").Trim();
+                if (bagname ==nw)
+                {
+                    if(spl[1].Contains("no other bags"))
+                    {
+                        return 0;
+                    }
+                    var d = spl[1].Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var dp in d)
+                    {
+                      
+                        var parts = dp.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                        try
+                        {
+                            var number = int.Parse(parts[0]);
+                            var color = parts[1] + " " + parts[2];
+                            total += number * (1+ (Recurse(color, inputRows)));
+                        }
+                        catch {
+                           
+                        }
+                    }
+                }
+            }
+            return total;
+        }
+
+			
