@@ -1,23 +1,196 @@
   var inputrows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             var numbers = inputrows.Select(x => long.Parse(x)).ToList();
+
             numbers.Sort();
             numbers.Insert(0, 0);
             int ones = 0;
             int threes = 0;
-            for(int i = 0; i< numbers.Count -1; i++)
+            for (int i = 0; i < numbers.Count - 1; i++)
             {
                 var curr = numbers[i];
                 var next = numbers[i + 1];
-                if(next -curr == 1)
+                if (next - curr == 1)
                 {
                     ones++;
                 }
-                else if(next-curr == 3)
+                else if (next - curr == 3)
                 {
                     threes++;
                 }
             }
 
+            //  värde,antal
+            Dictionary<long, long> options = new Dictionary<long, long>();
+            // test.Add(0);
+            options.Add(0, 1);
+            for (int i = 0; i < numbers.Count - 1; i++)
+            {
+                var current = numbers[i];
+                var next1 = numbers.Contains(current + 1);
+                var next2 = numbers.Contains(current + 2);
+                var next3 = numbers.Contains(current + 3);
+                if (next1 && !next2 && !next3)
+                {
+                    if (options.ContainsKey(current))
+                    {
+                        var val = options[current];
+                        options.Remove(current);
+                        if (options.ContainsKey(current + 1))
+                        {
+                            options[current + 1] = options[current + 1] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 1, val);
+                        }
+                    }
+                }
+                if (!next1 && next2 && !next3)
+                {
+                    if (options.ContainsKey(current))
+                    {
+                        var val = options[current];
+                        options.Remove(current);
+                        if (options.ContainsKey(current + 2))
+                        {
+                            options[current + 2] = options[current + 2] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 2, val);
+                        }
+                    }
+
+                }
+                if (!next1 && !next2 && next3)
+                {
+                    if (options.ContainsKey(current))
+                    {
+                        var val = options[current];
+                        options.Remove(current);
+                        if (options.ContainsKey(current + 3))
+                        {
+                            options[current + 3] = options[current + 3] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 3, val);
+                        }
+                    }
+                }
+                if (next1 && next2 && !next3)
+                {
+                    if (options.ContainsKey(current))
+                    {
+                        var val = options[current];
+                        options.Remove(current);
+                        if (options.ContainsKey(current + 1))
+                        {
+                            options[current + 1] = options[current + 1] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 1, val);
+                        }
+
+                        if (options.ContainsKey(current + 2))
+                        {
+                            options[current + 2] = options[current + 2] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 2, val);
+                        }
+                    }
+                }
+                if (next1 && !next2 && next3)
+                {
+                    if (options.ContainsKey(current))
+                    {
+                        var val = options[current];
+                        options.Remove(current);
+                        if (options.ContainsKey(current + 1))
+                        {
+                            options[current + 1] = options[current + 1] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 1, val);
+                        }
+
+                        if (options.ContainsKey(current + 3))
+                        {
+                            options[current + 3] = options[current + 3] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 3, val);
+                        }
+                    }
+                }
+                if (!next1 && next2 && next3)
+                {
+                    if (options.ContainsKey(current))
+                    {
+                        var val = options[current];
+                        options.Remove(current);
+                        if (options.ContainsKey(current + 2))
+                        {
+                            options[current + 2] = options[current + 2] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 2, val);
+                        }
+
+                        if (options.ContainsKey(current + 3))
+                        {
+                            options[current + 3] = options[current + 3] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 3, val);
+                        }
+                    }
+                }
+                if (next1 && next2 && next3)
+                {
+                    if (options.ContainsKey(current))
+                    {
+                        var val = options[current];
+                        options.Remove(current);
+                        if (options.ContainsKey(current + 1))
+                        {
+                            options[current + 1] = options[current + 1] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 1, val);
+                        }
+
+                        if (options.ContainsKey(current + 2))
+                        {
+                            options[current + 2] = options[current + 2] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 2, val);
+                        }
+
+                        if (options.ContainsKey(current + 3))
+                        {
+                            options[current + 3] = options[current + 3] + val;
+                        }
+                        else
+                        {
+                            options.Add(current + 3, val);
+                        }
+                    }
+                }
+            }
+
+
             //add last 3
             threes++;
-            return "ones " + ones + " threes " + threes + " multiplied " + ones * threes;
+            return "ones " + ones + " threes " + threes + " multiplied " + ones * threes + " lists " + options.First().Value;
+
