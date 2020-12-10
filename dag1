@@ -1,0 +1,38 @@
+            //part1
+            int result1 = 0;
+            foreach (var number in listOfInput)
+            {
+                if (listOfInput.Any(x => x == (2020 - number)))
+                {
+					          return (2020 - number) * number;
+                }
+            }
+            
+            //part 2
+            int result2 = 0;
+            bool found = false;
+            foreach (var number1 in listOfInput)
+            {
+                foreach (var number2 in listOfInput)
+                {
+                    foreach (var number3 in listOfInput)
+                    {
+                        if (number1 + number2 + number3 == 2020)
+                        {
+                            result2 = number1 * number2 * number3;
+                            found = true;
+                            break;
+                        }
+
+                    }
+                    if (found)
+                    {
+                        break;
+                    }
+
+                }
+                if (found)
+                {
+                    break;
+                }
+            }
