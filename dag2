@@ -1,0 +1,24 @@
+            string inputData =@"";
+			      int found1 = 0;
+            int found2 = 0;
+            var inputDatas = inputData.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var i in inputDatas)
+            {
+                var pair = i.Split(new char[] { ':', ' ', '-' }, StringSplitOptions.RemoveEmptyEntries);
+                var lowLimit = int.Parse(pair[0]);
+                var highLimit = int.Parse(pair[1]);
+                var character = char.Parse(pair[2]);
+                var str = pair[3];
+
+                int count = str.ToCharArray().Count(f => f == character);
+                if (count >= lowLimit && count <= highLimit)
+                {
+                    found1++;
+                }
+                var firstchar = str.ToCharArray()[lowLimit - 1];
+                var lastchar = str.ToCharArray()[highLimit - 1];
+                if(firstchar == character && lastchar != character || firstchar != character && lastchar == character)
+                {
+                    found2++;
+                }
+            }
