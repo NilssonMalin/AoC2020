@@ -1,0 +1,102 @@
+  var inputRows = inputStr.Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            long valids = 0;
+            long valid1 = 0;
+            foreach (var row in inputRows)
+            {
+                if (row.Contains("byr:") && row.Contains("iyr:") && row.Contains("eyr:") && row.Contains("hgt:") && row.Contains("hcl:") &&
+                      row.Contains("ecl:") && row.Contains("pid:"))
+                {
+                    valid1++;
+                    var parts = row.Split(new string[] { " ", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    int partValid = 0;
+                    foreach (var part in parts)
+                    {
+
+                        if (part.StartsWith("byr:"))
+                        {
+                            if (int.TryParse(part.Split(':')[1], out int b))
+                            {
+                                if (b >= 1920 && b <= 2002)
+                                {
+                                    partValid++;
+                                }
+                            }
+                        }
+                        else if (part.StartsWith("iyr:"))
+                        {
+                            if (int.TryParse(part.Split(':')[1], out int b))
+                            {
+                                if (b >= 2010 && b <= 2020)
+                                {
+                                    partValid++;
+                                }
+                            }
+                        }
+                        else if (part.StartsWith("eyr:"))
+                        {
+                            if (int.TryParse(part.Split(':')[1], out int b))
+                            {
+                                if (b >= 2020 && b <= 2030)
+                                {
+                                    partValid++;
+                                }
+                            }
+                        }
+                        else if (part.StartsWith("hgt:"))
+                        {
+                            if (part.Split(':')[1].EndsWith("in"))
+                            {
+                                var l = part.Split(':')[1].Replace("in", "");
+                                if (int.TryParse(l, out int le))
+                                {
+                                    if (le >= 59 && le <= 76)
+                                    {
+                                        partValid++;
+                                    }
+                                }
+                            }
+                            else if (part.Split(':')[1].EndsWith("cm"))
+                            {
+                                var l = part.Split(':')[1].Replace("cm", "");
+                                if (int.TryParse(l, out int le))
+                                {
+                                    if (le >= 150 && le <= 193)
+                                    {
+                                        partValid++;
+                                    }
+                                }
+                            }
+                        }
+                        else if (part.StartsWith("hcl:"))
+                        {
+                            var h = part.Split(':')[1];
+                            if (Regex.IsMatch(h, "^#[0-9A-Fa-f]{6}$"))
+                            {
+                                partValid++;
+                            }
+                        }
+                        else if (part.StartsWith("ecl:"))
+                        {
+                            string[] v = new string[] { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" };
+                            var h = part.Split(':')[1];
+                            if (v.Contains(h))
+                            {
+                                partValid++;
+                            }
+                        }
+                        else if (part.StartsWith("pid:"))
+                        {
+                            var h = part.Split(':')[1];
+                            if (Regex.IsMatch(h, "^[0-9]{9}$"))
+                            {
+                                partValid++;
+                            }
+                        }
+                    }
+                    if (partValid == 7)
+                    {
+                        valids++;
+                    }
+                }
+            }
+            return "valids: " + valids + " valid1: " + valid1; ;
