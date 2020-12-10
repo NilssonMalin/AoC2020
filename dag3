@@ -1,0 +1,86 @@
+lucka 3
+
+
+            var inputRows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            var noOrRows = inputRows.Count();
+            var noOfCols = inputRows.First().Length;
+            var j1 = 0;
+            var j2 = 0;
+            var j3 = 0;
+            var j4 = 0;
+            var j5 = 0;
+            long trees1 = 0;
+            long trees2 = 0;
+            long trees3 = 0;
+            long trees4 = 0;
+            long trees5 = 0;
+            for (int i = 0; i < noOrRows; i++)
+            {
+                var chr1 =  inputRows[i].ToCharArray()[j1];
+                var chr2 = inputRows[i].ToCharArray()[j2];
+                var chr3 = inputRows[i].ToCharArray()[j3];
+                var chr4 = inputRows[i].ToCharArray()[j4];
+                var chr5 = '.';
+                if (i % 2 == 0)
+                {
+                    chr5 = inputRows[i].ToCharArray()[j5];
+                    j5 = j5 + 1;
+                    if (j5 >= noOfCols)
+                    {
+                        j5 = j5 - noOfCols;
+                    }
+                    if (chr5 == '#')
+                    {
+                        trees5++;
+                    }
+                }
+                
+             
+                j1 = j1 + 1;
+                if(j1 >= noOfCols)
+                {
+                    j1 = j1 - noOfCols;
+                }
+                if(chr1 == '#')
+                {
+                    trees1++;
+                }
+
+                j2 = j2 + 3;
+                if (j2 >= noOfCols)
+                {
+                    j2 = j2 - noOfCols;
+                }
+                if (chr2 == '#')
+                {
+                    trees2++;
+                }
+
+                j3 = j3 + 5;
+                if (j3 >= noOfCols)
+                {
+                    j3 = j3 - noOfCols;
+                }
+                if (chr3 == '#')
+                {
+                    trees3++;
+                }
+
+                j4 = j4 + 7;
+                if (j4 >= noOfCols)
+                {
+                    j4 = j4 - noOfCols;
+                }
+                if (chr4 == '#')
+                {
+                    trees4++;
+                }
+
+                
+            }
+
+            var result = "trees: " + trees1 * trees2 * trees3 * trees4 * trees5;
+
+
+
