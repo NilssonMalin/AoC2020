@@ -1,0 +1,66 @@
+	   long accValue = 0;
+            var usedIndexes = new List<int>();
+            int currentIndex = 0;
+            var inputRows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            bool success = false;
+			//forloop del 2
+            for (int i = 0; i < inputRows.Length; i++)
+            {
+                 accValue = 0;
+                 usedIndexes = new List<int>();
+                 currentIndex = 0;
+                bool changeUsed = false;
+                int steps = 0;
+                while (steps < inputRows.Length)
+                {
+                    steps++;
+                    if (usedIndexes.Contains(currentIndex))
+                    {
+                        break;
+                    }
+                    usedIndexes.Add(currentIndex);
+                    //is done?
+                    if(currentIndex >= inputRows.Length)
+                    {
+                        success = true;
+                        break;
+                    }
+
+
+                    var currenOp = inputRows[currentIndex].Substring(0, 3);
+                    if (currenOp == "acc")
+                    {
+                        accValue += int.Parse(inputRows[currentIndex].Substring(4));
+                        currentIndex++;
+                    }
+					//changeUsed del 2
+                    else if(currentIndex == i && !changeUsed)
+                    {
+                        changeUsed = true;
+                        //byt grej
+                        if (currenOp == "nop")
+                        {
+                            currentIndex += int.Parse(inputRows[currentIndex].Substring(4));
+                        }
+                        else if (currenOp == "jmp")
+                        {
+                            currentIndex++;
+                        }
+                    }
+                    else if (currenOp == "jmp" )
+                    {
+                        currentIndex += int.Parse(inputRows[currentIndex].Substring(4));
+                    }
+                    else if (currenOp == "nop")
+                    {
+                        currentIndex++;
+                    }
+                }
+                if (success)
+                {
+                    break;
+                }
+            }
+            return "acc: " + accValue + " currentIndex: " + currentIndex;
+			
+			
