@@ -1,5 +1,4 @@
-  var inputrows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            var numbers = inputrows.Select(x => long.Parse(x)).ToList();
+   var numbers = inputrows.Select(x => long.Parse(x)).ToList();
 
             numbers.Sort();
             numbers.Insert(0, 0);
@@ -29,12 +28,14 @@
                 var next1 = numbers.Contains(current + 1);
                 var next2 = numbers.Contains(current + 2);
                 var next3 = numbers.Contains(current + 3);
-                if (next1 && !next2 && !next3)
+
+
+                if (options.ContainsKey(current))
                 {
-                    if (options.ContainsKey(current))
+                    var val = options[current];
+                    options.Remove(current);
+                    if (next1)
                     {
-                        var val = options[current];
-                        options.Remove(current);
                         if (options.ContainsKey(current + 1))
                         {
                             options[current + 1] = options[current + 1] + val;
@@ -44,13 +45,8 @@
                             options.Add(current + 1, val);
                         }
                     }
-                }
-                if (!next1 && next2 && !next3)
-                {
-                    if (options.ContainsKey(current))
+                    if (next2)
                     {
-                        var val = options[current];
-                        options.Remove(current);
                         if (options.ContainsKey(current + 2))
                         {
                             options[current + 2] = options[current + 2] + val;
@@ -60,14 +56,8 @@
                             options.Add(current + 2, val);
                         }
                     }
-
-                }
-                if (!next1 && !next2 && next3)
-                {
-                    if (options.ContainsKey(current))
+                    if (next3)
                     {
-                        var val = options[current];
-                        options.Remove(current);
                         if (options.ContainsKey(current + 3))
                         {
                             options[current + 3] = options[current + 3] + val;
@@ -78,119 +68,10 @@
                         }
                     }
                 }
-                if (next1 && next2 && !next3)
-                {
-                    if (options.ContainsKey(current))
-                    {
-                        var val = options[current];
-                        options.Remove(current);
-                        if (options.ContainsKey(current + 1))
-                        {
-                            options[current + 1] = options[current + 1] + val;
-                        }
-                        else
-                        {
-                            options.Add(current + 1, val);
-                        }
 
-                        if (options.ContainsKey(current + 2))
-                        {
-                            options[current + 2] = options[current + 2] + val;
-                        }
-                        else
-                        {
-                            options.Add(current + 2, val);
-                        }
-                    }
-                }
-                if (next1 && !next2 && next3)
-                {
-                    if (options.ContainsKey(current))
-                    {
-                        var val = options[current];
-                        options.Remove(current);
-                        if (options.ContainsKey(current + 1))
-                        {
-                            options[current + 1] = options[current + 1] + val;
-                        }
-                        else
-                        {
-                            options.Add(current + 1, val);
-                        }
-
-                        if (options.ContainsKey(current + 3))
-                        {
-                            options[current + 3] = options[current + 3] + val;
-                        }
-                        else
-                        {
-                            options.Add(current + 3, val);
-                        }
-                    }
-                }
-                if (!next1 && next2 && next3)
-                {
-                    if (options.ContainsKey(current))
-                    {
-                        var val = options[current];
-                        options.Remove(current);
-                        if (options.ContainsKey(current + 2))
-                        {
-                            options[current + 2] = options[current + 2] + val;
-                        }
-                        else
-                        {
-                            options.Add(current + 2, val);
-                        }
-
-                        if (options.ContainsKey(current + 3))
-                        {
-                            options[current + 3] = options[current + 3] + val;
-                        }
-                        else
-                        {
-                            options.Add(current + 3, val);
-                        }
-                    }
-                }
-                if (next1 && next2 && next3)
-                {
-                    if (options.ContainsKey(current))
-                    {
-                        var val = options[current];
-                        options.Remove(current);
-                        if (options.ContainsKey(current + 1))
-                        {
-                            options[current + 1] = options[current + 1] + val;
-                        }
-                        else
-                        {
-                            options.Add(current + 1, val);
-                        }
-
-                        if (options.ContainsKey(current + 2))
-                        {
-                            options[current + 2] = options[current + 2] + val;
-                        }
-                        else
-                        {
-                            options.Add(current + 2, val);
-                        }
-
-                        if (options.ContainsKey(current + 3))
-                        {
-                            options[current + 3] = options[current + 3] + val;
-                        }
-                        else
-                        {
-                            options.Add(current + 3, val);
-                        }
-                    }
-                }
             }
 
 
             //add last 3
             threes++;
             return "ones " + ones + " threes " + threes + " multiplied " + ones * threes + " lists " + options.First().Value;
-
