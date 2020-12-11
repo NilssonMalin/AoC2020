@@ -1,0 +1,146 @@
+   var inputRows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var arrayarray = inputRows.Select(x => x.ToCharArray()).ToArray();
+            var arrayarrayCopy = inputRows.Select(x => x.ToCharArray()).ToArray();
+            var width = arrayarray[0].Length;
+            var height = inputRows.Length;
+            bool somethingchanged = true;
+            bool copy = false;
+            while (somethingchanged)
+            {
+                somethingchanged = false;
+                for (int i = 0; i < height; i++)
+                {
+                    for (int j = 0; j < width; j++)
+                    {
+                        if (copy)
+                        {
+                            if (arrayarray[i][j] == 'L')
+                            {
+                                if (nearbyEmpty(arrayarray, i, j))
+                                {
+                                    arrayarrayCopy[i][j] = '#';
+                                    somethingchanged = true;
+                                }
+                                else
+                                {
+                                    arrayarrayCopy[i][j] = 'L';
+                                }
+                            }
+
+                            if (arrayarray[i][j] == '#')
+                            {
+                                if (nearbyFull(arrayarray, i, j))
+                                {
+                                    arrayarrayCopy[i][j] = 'L';
+                                    somethingchanged = true;
+                                }
+                                else
+                                {
+                                    arrayarrayCopy[i][j] = '#';
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (arrayarrayCopy[i][j] == 'L')
+                            {
+                                if (nearbyEmpty(arrayarrayCopy, i, j))
+                                {
+                                    arrayarray[i][j] = '#';
+                                    somethingchanged = true;
+                                }
+                                else
+                                {
+                                    arrayarray[i][j] = 'L';
+                                }
+                            }
+
+                            if (arrayarrayCopy[i][j] == '#')
+                            {
+                                if (nearbyFull(arrayarrayCopy, i, j))
+                                {
+                                    arrayarray[i][j] = 'L';
+                                    somethingchanged = true;
+                                }
+                                else
+                                {
+                                    arrayarray[i][j] = '#';
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                copy = !copy;
+            }
+            var list = arrayarray.SelectMany(x => x).Where(y => y == '#');
+
+            return "antal stolar " + list.Count();
+ 
+ private static bool nearbyFull(char[][] arrayarray, int i, int j)
+        {
+            //minst 5 upptagna
+            int full = 0;
+            full += IsEmpty(arrayarray, i - 1, j - 1, "N", "W") ? 0 : 1;
+            full += IsEmpty(arrayarray, i - 1, j, "N","") ? 0 : 1;
+            full += IsEmpty(arrayarray, i - 1, j + 1, "N", "E") ? 0 : 1;
+
+            full += IsEmpty(arrayarray, i, j - 1,"", "W") ? 0 : 1;
+
+            full += IsEmpty(arrayarray, i, j + 1, "","E") ? 0 : 1;
+
+            full += IsEmpty(arrayarray, i + 1, j - 1, "S", "W") ? 0 : 1;
+            full += IsEmpty(arrayarray, i + 1, j, "S","") ? 0 : 1;
+            full += IsEmpty(arrayarray, i + 1, j + 1, "S", "E") ? 0 : 1;
+
+            return full >= 5;
+        }
+
+        private static bool nearbyEmpty(char[][] arrayarray, int i, int j)
+        {
+            if (IsEmpty(arrayarray, i - 1, j - 1, "N", "W") && IsEmpty(arrayarray, i - 1, j, "N", "") && IsEmpty(arrayarray, i - 1, j + 1, "N", "E") &&
+               IsEmpty(arrayarray, i, j - 1, "", "W") && IsEmpty(arrayarray, i, j + 1, "", "E") &&
+               IsEmpty(arrayarray, i + 1, j - 1, "S", "W") && IsEmpty(arrayarray, i + 1, j,"S","") && IsEmpty(arrayarray, i + 1, j + 1, "S", "E"))
+            {
+                return true;
+            }
+            return false;
+        }
+        private static bool IsEmpty(char[][] arrayarray, int i, int j, string ns, string we)
+        {
+            try
+            {
+                if (arrayarray[i][j] == '.')
+                {
+                    if (ns == "N")
+                        i--;
+                    if (ns =="S")
+                        i++;
+                    if (we =="W")
+                        j--;
+                    if (we =="E")
+                        j++;
+
+                    return IsEmpty(arrayarray, i, j , ns,we);
+                }
+                return arrayarray[i][j] != '#';
+            }
+            catch
+            {
+                //utanför räknas som ledigt
+                return true;
+            }
+        }
+        private static bool IsEmpty(char[][] arrayarray, int v1, int v2)
+        {
+            try
+            {
+                return arrayarray[v1][v2] != '#';
+            }
+            catch
+            {
+                //utanför räknas som ledigt
+                return true;
+            }
+        }
