@@ -1,4 +1,6 @@
-  var inputrows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+ 
+ //del1
+ var inputrows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             int posN = 0;
             int posE = 0;
             char currentDirection = 'E';
@@ -39,3 +41,100 @@
                 }
             }
             return "posN " + posN + " posE " + posE + " distance " + (Math.Abs(posN) + Math.Abs(posE));
+     
+     //del2
+       var inputrows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            int posN = 0;
+            int posE = 0;
+            waypointN = 1;
+            waypointE = 10;
+            char currentDirection = 'E';
+
+            foreach (var row in inputrows)
+            {
+                var action = row.First();
+                var val = int.Parse(row.Substring(1));
+
+
+
+                switch (action)
+                {
+                    case 'N':
+                        waypointN += val;
+                        break;
+                    case 'E':
+                        waypointE += val;
+                        break;
+                    case 'S':
+                        waypointN -= val;
+                        break;
+                    case 'W':
+                        waypointE -= val;
+                        break;
+                    case 'L':
+                      //  currentDirection = Rotate(-val, currentDirection);
+                        Rotatewaypoint(-val);
+                        break;
+                    case 'R':
+                       // currentDirection = Rotate(val, currentDirection);
+                        Rotatewaypoint(val);
+                        break;
+                    case 'F':
+                        posN = posN + (val * waypointN);
+                        posE = posE + (val * waypointE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return "posN " + posN + " posE " + posE + " distance " + (Math.Abs(posN) + Math.Abs(posE));
+
+            
+            
+             private static void Rotatewaypoint(int val)
+        {
+            var steps = (val / 90) % 4;
+            if (steps < 0)
+            {
+                steps += 4;
+            }
+            switch (steps)
+            {
+                case 1:
+                    var temp = waypointE;
+                    waypointE = waypointN;
+                    waypointN = -temp;
+                    break;
+                case 2:
+                    waypointN = -waypointN;
+                    waypointE = -waypointE;
+                    break;
+                case 3:
+                    var temp3 = waypointN;
+                    waypointN = waypointE;
+                    waypointE = -temp3;
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        private static char Rotate(int v, char currentDirection)
+        {
+            var directions = new List<char> { 'N', 'E', 'S', 'W' };
+            var steps = (v / 90) % 4;
+            var currIndex = directions.IndexOf(currentDirection);
+            var newIndex = (currIndex + steps) % 4;
+            while (newIndex < 0)
+            {
+                newIndex += 4;
+            }
+            while (newIndex > 3)
+            {
+                newIndex += 4;
+            }
+
+            var newDir = directions[newIndex];
+            return newDir;
+        }
