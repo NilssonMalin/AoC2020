@@ -1,0 +1,41 @@
+  var inputrows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            int posN = 0;
+            int posE = 0;
+            char currentDirection = 'E';
+
+            foreach (var row in inputrows)
+            {
+                var action = row.First();
+                var val = int.Parse(row.Substring(1));
+                if (action == 'F')
+                {
+                    action = currentDirection;
+                }
+
+
+                switch (action)
+                {
+                    case 'N':
+                        posN += val;
+                        break;
+                    case 'E':
+                        posE += val;
+                        break;
+                    case 'S':
+                        posN -= val;
+                        break;
+                    case 'W':
+                        posE -= val;
+                        break;
+                    case 'L':
+                        currentDirection = Rotate(-val, currentDirection);
+                        break;
+                    case 'R':
+                        currentDirection = Rotate(val, currentDirection);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            return "posN " + posN + " posE " + posE + " distance " + (Math.Abs(posN) + Math.Abs(posE));
