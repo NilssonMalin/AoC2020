@@ -1,0 +1,22 @@
+//del1
+   var inputrows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            int startStamp = int.Parse(inputrows[0]);
+
+            var bussList = inputrows[1].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            int nearestNo = 0;
+            int waitTime = int.MaxValue;
+            foreach (var buss in bussList)
+            {
+                if (int.TryParse(buss, out int bussNo))
+                {
+                    var mod = startStamp % bussNo;
+                    mod = bussNo - mod ;
+                    if (mod < waitTime)
+                    {
+                        waitTime = mod;
+                        nearestNo = bussNo;
+                    }
+                }
+
+            }
+            return "bussNo " + nearestNo + " waitTime " + waitTime + " multiple " + (nearestNo * waitTime);
