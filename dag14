@@ -1,0 +1,36 @@
+ //del1
+ var inputRows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var currentMask = "";
+            var memory = new Dictionary<int, long>();
+
+            foreach (var row in inputRows)
+            {
+                if (row.StartsWith("mask"))
+                {
+                    currentMask = row.Split('=')[1].Trim();
+                }
+                else
+                {
+                    var index = int.Parse(row.Split(']')[0].Substring(4));
+                    var value = long.Parse(row.Split('=')[1].Trim());
+                    value = ApplyMask(currentMask, value);
+
+                    if (memory.ContainsKey(index))
+                    {
+                        memory[index] = value;
+                    }
+                    else
+                    {
+                        memory.Add(index, value);
+                    }
+                }
+            }
+            string mess = "";
+            long sum = 0;
+            foreach(var k in memory)
+            {
+                mess += "k " + k.Key + " v " + k.Value;
+                sum += k.Value;
+            }
+
+            return mess + " sum " + sum;
