@@ -34,3 +34,43 @@
             }
 
             return mess + " sum " + sum;
+//del2
+  var inputRows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var currentMask = "";
+            var memory = new Dictionary<long, long>();
+
+            foreach (var row in inputRows)
+            {
+                if (row.StartsWith("mask"))
+                {
+                    currentMask = row.Split('=')[1].Trim();
+                }
+                else
+                {
+                    var index = int.Parse(row.Split(']')[0].Substring(4));
+                    var value = long.Parse(row.Split('=')[1].Trim());
+                 
+                    var indeces = ApplyIndexMask(currentMask, index);
+
+                    foreach (var i in indeces)
+                    {
+                        if (memory.ContainsKey(i))
+                        {
+                            memory[i] = value;
+                        }
+                        else
+                        {
+                            memory.Add(i, value);
+                        }
+                    }
+                }
+            }
+            string mess = "";
+            long sum = 0;
+            foreach(var k in memory)
+            {
+                mess += "k " + k.Key + " v " + k.Value;
+                sum += k.Value;
+            }
+
+            return  " sum " + sum;
