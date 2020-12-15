@@ -20,3 +20,58 @@
 
             }
             return "bussNo " + nearestNo + " waitTime " + waitTime + " multiple " + (nearestNo * waitTime);
+            
+            //del2
+             var input = @"1002392
+            23,x,x,x,x,x,x,x,x,x,x,x,x,41,x,x,x,37,x,x,x,x,x,421,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,17,x,19,x,x,x,x,x,x,x,x,x,29,x,487,x,x,x,x,x,x,x,x,x,x,x,x,13";
+
+
+            var inputrows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            int startStamp = int.Parse(inputrows[0]);
+
+            var bussList = inputrows[1].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+
+            int highestBussNo = bussList.Where(x => int.TryParse(x, out int s)).OrderByDescending(y => int.Parse(y)).Select(z => int.Parse(z)).First();
+            int indexForHigestBusNo = bussList.ToList().IndexOf(highestBussNo.ToString());
+
+            long t = 0; //-indexForHigestBusNo;
+            bool found = false;
+            long delta = 1;
+            int highestFoundIndex = -1;
+            long lastFoundT = 0;
+            while (!found)
+            {
+                t += delta;
+                for (int i = 0; i < bussList.Length; i++)
+                {
+                    if (int.TryParse(bussList[i], out int bussno))
+                    {
+                        if ((t + i) % bussno != 0)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            if (i >= highestFoundIndex)
+                            {
+                                var diff = t - lastFoundT;
+                                lastFoundT = t;
+                                highestFoundIndex = i;
+
+                                delta = Math.Max(delta, diff);
+                                OnStatusChanged(String.Format("Delta {0} T {1}", delta, t));
+                            }
+                        }
+
+                    }
+                    if (i == bussList.Length - 1)
+                    {
+                        found = true;
+                    }
+                }
+
+            }
+
+
+            return "timestamp " + t;
