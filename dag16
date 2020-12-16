@@ -1,40 +1,166 @@
-var spanrows = spansInput.Split(new string[] { "\r\n", "or" }, StringSplitOptions.RemoveEmptyEntries);
-            var spans = spanrows.Select(x => new Numberspan(x));
+    var spanrows = spansInput.Split(new string[] { "\r\n", "or" }, StringSplitOptions.RemoveEmptyEntries);
+            var rules = spanrows.Select(x => new Numberspan(x)).ToList();
 
             var inputRows = ticketInput.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             var invalids = new List<int>();
             var validTicketRows = new List<string>();
+
+
             foreach (var row in inputRows)
             {
-                var numbers = row.Split(',').Select(x => int.Parse(x));
+                var numbers = row.Split(',').Select(x => int.Parse(x)).ToList();
                 bool ticketValid = true;
-                foreach (var number in numbers)
+                for (int i = 0; i < numbers.Count(); i++) //(var number in numbers)
                 {
                     bool valid = false;
-                    foreach (var rule in spans)
+                    for (int j = 0; j < rules.Count(); j++)  //(var rule in spans)
                     {
-                        if( rule.LowLimit <= number && rule.HighLimit >= number)
+                        if (rules[j].LowLimit <= numbers[i] && rules[j].HighLimit >= numbers[i])
                         {
                             valid = true;
+
                         }
                     }
                     if (!valid)
                     {
-                        invalids.Add(number);
-                        OnStatusChanged("invalid number " + number);
+                        invalids.Add(numbers[i]);
+                        OnStatusChanged("invalid number " + numbers[i]);
                         ticketValid = false;
                         break;
                     }
                 }
-                if(ticketValid)
+                if (ticketValid)
                 {
                     validTicketRows.Add(row);
                 }
             }
+
+            var dubblespanrows = spansInput.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var dubbleRules = dubblespanrows.Select(x => new DubbleNumberspan(x)).ToList();
+
+
+            var invalidPositions = new Dictionary<int, List<int>>(); //position i inputRow, index på regler som matchar
+            var invalidRules = new Dictionary<int, List<int>>(); // index för regel, lista på positioner i inputRow
+
+            foreach (var row in validTicketRows)
+            {
+                var numbers = row.Split(',').Select(x => int.Parse(x)).ToList();
+                for (int i = 0; i < numbers.Count(); i++) //(var number in numbers)
+                {
+                    for (int j = 0; j < dubbleRules.Count(); j++)  //(var rule in spans)
+                    {
+                        if ((dubbleRules[j].LowLimit1 > numbers[i] || dubbleRules[j].HighLimit1 < numbers[i]) &&
+                            (dubbleRules[j].LowLimit2 > numbers[i] || dubbleRules[j].HighLimit2 < numbers[i]))
+                        {
+                            if (invalidPositions.ContainsKey(i))
+                            {
+                                if (!invalidPositions[i].Contains(j))
+                                {
+                                    invalidPositions[i].Add(j);
+                                }
+                            }
+                            else
+                            {
+                                invalidPositions.Add(i, new List<int>() { j });
+                            }
+
+                            if (invalidRules.ContainsKey(j))
+                            {
+                                if (!invalidRules[j].Contains(i))
+                                {
+                                    invalidRules[j].Add(i);
+                                }
+                            }
+                            else
+                            {
+                                invalidRules.Add(j, new List<int>() { i });
+                            }
+                        }
+
+                    }
+                }
+            }
+            var validRules = new Dictionary<int, List<int>>();
+            foreach (var invalid in invalidRules)
+            {
+                var list = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+                var k = invalid.Key;
+                var v = list.Where(x => !invalid.Value.Contains(x)).ToList();
+                validRules.Add(k, v);
+            }
+            long total = 1;
+
+            bool done = false;
+            while (!done)
+            {
+                foreach (var validRule in validRules)
+                {
+                    if (validRule.Value.Count == 1)
+                    {
+                        var singleValue = validRule.Value.First();
+                       // validRules.ForEach(x => x.Value.Remove(singleValue));
+                       foreach(var r in validRules)
+                        {
+                            if(r.Key != validRule.Key)
+                            {
+                                r.Value.Remove(singleValue);
+                            }
+                        }
+                    }
+                }
+
+                var temp = validRules.Where(x => x.Key < 6 && x.Value.Count < 2);
+                if (temp.Count() == 6)
+                {
+                    done = true;
+
+                    var myTicketInput ="107,157,197,181,71,113,179,109,97,163,73,53,101,193,173,151,167,191,127,103";
+                    var myTicket = myTicketInput.Split(',').Select(x => int.Parse(x)).ToList();
+                    foreach (var t in temp)
+                    {
+                        total = total * myTicket[t.Value.First()];
+                    }
+
+                }
+            }
+
+
+
+
             var sum = 0;
-            foreach(var num in invalids)
+            foreach (var num in invalids)
             {
                 sum += num;
             }
 
-            return "summa " + sum;
+            return "summa " + sum + " total " + total;
+            
+            
+             internal class DubbleNumberspan
+    {
+        public int LowLimit1 { get; set; }
+        public int HighLimit1 { get; set; }
+        public int LowLimit2 { get; set; }
+        public int HighLimit2 { get; set; }
+
+        public DubbleNumberspan(string x)
+        {
+            var s = x.Split(new string[] { "or", "-" }, StringSplitOptions.RemoveEmptyEntries);
+            this.LowLimit1 = int.Parse(s[0].Trim());
+            this.HighLimit1 = int.Parse(s[1].Trim());
+            this.LowLimit2 = int.Parse(s[2].Trim());
+            this.HighLimit2 = int.Parse(s[3].Trim());
+        }
+    }
+
+    internal class Numberspan
+    {
+        public int LowLimit { get; set; }
+        public int HighLimit { get; set; }
+        public Numberspan(string x)
+        {
+            var s = x.Split(new string[] { "-" }, StringSplitOptions.RemoveEmptyEntries);
+            this.LowLimit = int.Parse(s[0].Trim());
+            this.HighLimit = int.Parse(s[1].Trim());
+        }
+    }
