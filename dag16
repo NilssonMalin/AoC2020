@@ -1,0 +1,40 @@
+var spanrows = spansInput.Split(new string[] { "\r\n", "or" }, StringSplitOptions.RemoveEmptyEntries);
+            var spans = spanrows.Select(x => new Numberspan(x));
+
+            var inputRows = ticketInput.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var invalids = new List<int>();
+            var validTicketRows = new List<string>();
+            foreach (var row in inputRows)
+            {
+                var numbers = row.Split(',').Select(x => int.Parse(x));
+                bool ticketValid = true;
+                foreach (var number in numbers)
+                {
+                    bool valid = false;
+                    foreach (var rule in spans)
+                    {
+                        if( rule.LowLimit <= number && rule.HighLimit >= number)
+                        {
+                            valid = true;
+                        }
+                    }
+                    if (!valid)
+                    {
+                        invalids.Add(number);
+                        OnStatusChanged("invalid number " + number);
+                        ticketValid = false;
+                        break;
+                    }
+                }
+                if(ticketValid)
+                {
+                    validTicketRows.Add(row);
+                }
+            }
+            var sum = 0;
+            foreach(var num in invalids)
+            {
+                sum += num;
+            }
+
+            return "summa " + sum;
