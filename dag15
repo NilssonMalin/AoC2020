@@ -1,0 +1,45 @@
+            var input = @"19,20,14,0,9,1";
+            var inputRows = input.Split(',');
+            var stop = 30000000; //2020
+            var numbers = new List<int>(inputRows.Select(x => int.Parse(x)));
+           
+            var positions = new Dictionary<long, int>(); //number, last occurance index
+
+
+            var lastNo = numbers.Last();
+            numbers.RemoveAt(numbers.Count - 1);
+            for (int i = 0; i < numbers.Count; i++)
+            {
+                positions.Add(numbers[i], i);
+            }
+
+         
+            for (int i = inputRows.Length; i < stop; i++)
+            {
+                var lastindex = -1;
+                if (positions.ContainsKey(lastNo))
+                {
+                    lastindex = positions[lastNo];
+                }
+                numbers.Add(lastNo); //lägg till förra
+               
+                if (positions.ContainsKey(lastNo))
+                {
+                    positions[lastNo] = i -1;
+                }
+                else
+                {
+                    positions.Add(lastNo, i -1);
+                }
+
+                if (lastindex < 0)
+                {
+                    lastNo = 0;
+                }
+                else
+                {
+                    lastNo = (i - 1 - lastindex);
+                }
+               
+            }
+            return " lastNo " + lastNo;
