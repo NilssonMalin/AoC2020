@@ -49,3 +49,129 @@
             }
 
             return "active " + noOfActive;
+            
+            
+            
+            //del2
+             var inputRows = input.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var initialsize = inputRows.Length;
+
+            var grid = new char[20, 20, 20,20];
+            var gridCopy = new char[20, 20, 20,20];
+           
+            var i = 0;
+            var j = 0;
+            var start = (20 - initialsize) / 2;
+            for (int x = start; x < start + initialsize; x++)
+            {
+                i = 0;
+                for (int y = start; y < start + initialsize; y++)
+                {
+                    grid[x, y, 9,9] = inputRows[i].ToCharArray()[j];
+                    gridCopy[x, y, 9,9] = inputRows[i].ToCharArray()[j];
+                    i++;
+                }
+                j++;
+            }
+            bool copy = false;
+            for (int t = 0; t < 6; t++)
+            {
+                if (copy)
+                {
+                    ProcessGrid(grid, gridCopy);
+                }
+                else
+                {
+                    ProcessGrid(gridCopy, grid);
+                }
+
+                copy = !copy;
+            }
+            var noOfActive = 0;
+            for (int w = 0; w < 20; w++)
+            {
+                for (int z = 0; z < 20; z++)
+                {
+                    for (int y = 0; y < 20; y++)
+                    {
+                        for (int x = 0; x < 20; x++)
+                        {
+                            if (grid[x, y, z,w] == '#')
+                            {
+                                noOfActive++;
+                            }
+                        }
+                    }
+                }
+            }
+            return "active " + noOfActive;
+  private void ProcessGrid(char[,,,] grid, char[,,,] gridCopy)
+        {
+            for (int w = 0; w < 20; w++)
+            {
+                for (int z = 0; z < 20; z++)
+                {
+                    for (int y = 0; y < 20; y++)
+                    {
+                        for (int x = 0; x < 20; x++)
+                        {
+                            grid[x, y, z,w] = ProcessNear(gridCopy[x, y, z, w], x, y, z,w, gridCopy);
+                        }
+                    }
+                }
+
+            }
+        }
+
+        private char ProcessNear(char v, int x, int y, int z, int w, char[,,,] gridCopy)
+        {
+            var numberofActive = 0;
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    for (int k = -1; k <= 1; k++)
+                    {
+                        for (int l = -1; l <= 1; l++)
+                        {
+                            if (i != 0 || j != 0 || k != 0 ||l != 0)
+                            {
+                                try
+                                {
+                                    if (gridCopy[i + x, j + y, k + z, l+w] == '#')
+                                    {
+                                        numberofActive++;
+                                    }
+                                }
+                                catch
+                                {
+                                    //utanför = inaktiv
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (v == '#')
+            {
+                if (numberofActive == 2 || numberofActive == 3)
+                {
+                    return '#';
+                }
+                else
+                {
+                    return '.';
+                }
+            }
+            else
+            {
+                if(numberofActive == 3)
+                {
+                    return '#';
+                }
+                else
+                {
+                    return '.';
+                }
+            }
+        }
