@@ -1,0 +1,115 @@
+  //del 1
+  
+  var inputRows = input.Split(new String[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            decimal grandTotal = 0;
+            var totalList = new List<decimal>();
+            foreach (var row in inputRows)
+            {
+                var total = CalculateParentes(row.Replace(" ",""));
+                totalList.Add(total);
+                grandTotal += total;
+            }
+
+            return "grandTotal " + grandTotal +  " list " + string.Join(",", totalList);
+            
+             private decimal CalculateParentes(string input)
+        {
+            decimal total = 0;
+            char currentOp = ' ';
+            decimal currentNo = 0;
+            var first = true;
+            while (input.Length > 0)
+            {
+                var c = input.First();
+                if (c == '(')
+                {
+                    int index = FindEnd(input);
+                    currentNo = CalculateParentes(input.Substring(1, index-1));
+                    input = input.Substring(index + 1);
+
+                    if (first)
+                    {
+                        total = currentNo;
+                        first = false;
+                    }
+                    else
+                    {
+                        total = Calculate(total, currentNo, currentOp);
+                    }
+                }
+                else if (decimal.TryParse(c.ToString(), out decimal _))
+                {
+                    currentNo = FindNumber(input);
+                    var str = currentNo + "";
+                    input = input.Substring(str.Length);
+                    if (first)
+                    {
+                        total = currentNo;
+                        first = false;
+                    }
+                    else
+                    {
+                        total = Calculate(total, currentNo, currentOp);
+                    }
+                }
+                else
+                {
+                    currentOp = c;
+                    input = input.Substring(1);
+                }
+            }
+            return total;
+        }
+        private int FindEnd(string input)
+        {
+            int noOfP = 0;
+            for(int i = 0;i< input.Length;i++)
+            {
+                var c = input[i];
+                if(c == '(')
+                {
+                    noOfP++;
+                }
+                if(c == ')')
+                {
+                    noOfP--;
+                }
+                if(noOfP == 0)
+                {
+                    return i;
+                }
+            }
+            return input.Length - 1;
+        }
+
+        private decimal Calculate(decimal total, decimal currentNo, char currentOp)
+        {
+          switch(currentOp)
+            {
+                case '+':
+                    return total + currentNo;
+                case '-':
+                    return total - currentNo;
+                case '*':
+                    return total * currentNo;
+                default:
+                    return total;
+            }
+        }
+
+        private decimal FindNumber(string input)
+        {
+            string nStr = "";
+            for(int i = 0; i<input.Length;i++)
+            {
+                if(int.TryParse(input[i].ToString(), out int n))
+                {
+                    nStr += n;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return int.Parse(nStr);
+        }
