@@ -52,6 +52,13 @@
                         total = Calculate(total, currentNo, currentOp);
                     }
                 }
+                //del 2
+                else if (c == '*')
+                {
+                    input = AddParentes(input);
+                    currentOp = c;
+                }
+                //end del 2
                 else
                 {
                     currentOp = c;
@@ -112,4 +119,33 @@
                 }
             }
             return int.Parse(nStr);
+        }
+            private string AddParentes(string input)
+        {
+            int noOfP = 0;
+            input = input.Substring(1); //ta bort *
+            bool added = false;
+            for (int i = 0; i < input.Length; i++)
+            {
+                var c = input[i];
+                if (c == '(')
+                {
+                    noOfP++;
+                }
+                if (c == ')')
+                {
+                    noOfP--;
+                }
+                if (c == '*' && noOfP == 0)
+                {
+                    input = input.Insert(i, ")");
+                    added = true;
+                    break;
+                }
+            }
+            if(!added)
+            {
+                input = input + ")";
+            }
+            return "(" + input;
         }
